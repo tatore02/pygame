@@ -5,7 +5,7 @@ import random
 pygame.init()
 
 #IMMAGINI
-PATH = "game/flappyBird/immagini/"
+PATH = "flappyBird/immagini/"
 sfondo = pygame.image.load(PATH + "sfondo.png")
 uccello = pygame.image.load(PATH + 'uccello.png')
 base = pygame.image.load(PATH + 'base.png')

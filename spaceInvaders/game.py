@@ -4,7 +4,7 @@ import random
 pygame.init()
 
 #immagini
-PATH = "game/spaceInvaders/immagini/"
+PATH = "spaceInvaders/immagini/"
 player = pygame.image.load(PATH + "player.png")
 green = pygame.image.load(PATH + "green.png")
 background = pygame.image.load(PATH + "background.png")
