@@ -19,12 +19,15 @@ UNIT_SIZE = 3
 FPS = 50
 ENEMY_WIDTH = enemy.get_width()
 ENEMY_HEIGHT = enemy.get_height()
+FONT = pygame.font.SysFont('Comic Sans MS', 30, bold=True)
+
 
 #VARIABILI GLOBALI
 shots = []
 enemies = []
 shotsEnemies = []
 life = 3
+nTurn = 0
 
 #CLASSI
 class Shot:
@@ -58,7 +61,6 @@ class Enemy:
         self.y = y
         self.vel = UNIT_SIZE
         self.direction = 'r'
-        self.nTurn = 0
     def drawEnemy(self):
         DISPLAY.blit(enemy, (self.x,self.y))
     def move(self):
@@ -67,16 +69,19 @@ class Enemy:
             self.direction = 'l'
         elif self.x == self.xPart - (UNIT_SIZE*25):
             self.direction = 'r'
-            self.nTurn += 1
+            global nTurn
+            nTurn += 1
         #cambia direzione
         if self.direction == 'r':
             self.x += UNIT_SIZE/3
         elif self.direction == 'l':
             self.x -= UNIT_SIZE/3
         #muovi i nemici verso il basso
-        if self.nTurn == 0:
+        """"
+        if nTurn == 100:
             self.y += UNIT_SIZE*2
             self.nTurn = 0
+        """
     def checkCollision(self):
         #collision with player
         if self.x > playerX and self.x < playerX+player.get_width() and self.y > playerY:
@@ -126,6 +131,10 @@ def draw():
         s.drawShot()
     for s in shotsEnemies:
         s.drawShot()
+
+    #debug
+    puntiRender = FONT.render(str(nTurn), 1, (255,255,255))
+    DISPLAY.blit(puntiRender, (100,0))
 
 def update():
     pygame.display.update()
