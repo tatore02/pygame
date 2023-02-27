@@ -14,8 +14,11 @@ enemy = pygame.image.load(PATH + "red.png")
 heart = pygame.image.load(PATH + "heart.png")
 
 #COSTANTI
-DISPLAY = pygame.display.set_mode((1228,670))
+WIDTH = 1228
+HEIGHT = 670
+DISPLAY = pygame.display.set_mode((WIDTH,HEIGHT))
 UNIT_SIZE = 3
+WALL_SIZE = 15
 FPS = 50
 ENEMY_WIDTH = enemy.get_width()
 ENEMY_HEIGHT = enemy.get_height()
@@ -27,7 +30,7 @@ shots = []
 enemies = []
 shotsEnemies = []
 life = 3
-nTurn = 0
+walls = []
 
 #CLASSI
 class Shot:
@@ -40,6 +43,11 @@ class Shot:
             DISPLAY.blit(shot, (self.x,self.y))
         else:
             shots.remove(self)
+    def checkCollisionWall(self):
+        for w in walls:
+            if self.x > w.x and self.x < w.x+WALL_SIZE and self.y > w.y and self.y < w.y+WALL_SIZE:
+                walls.remove(w)
+                return True
 
 class ShotEnemy(Shot):
     def drawShot(self):
@@ -69,19 +77,13 @@ class Enemy:
             self.direction = 'l'
         elif self.x == self.xPart - (UNIT_SIZE*25):
             self.direction = 'r'
-            global nTurn
-            nTurn += 1
         #cambia direzione
         if self.direction == 'r':
             self.x += UNIT_SIZE/3
         elif self.direction == 'l':
             self.x -= UNIT_SIZE/3
         #muovi i nemici verso il basso
-        """"
-        if nTurn == 100:
-            self.y += UNIT_SIZE*2
-            self.nTurn = 0
-        """
+
     def checkCollision(self):
         #collision with player
         if self.x > playerX and self.x < playerX+player.get_width() and self.y > playerY:
@@ -93,24 +95,51 @@ class Enemy:
                 shots.remove(s)
                 return True
         return False
-
-class Wall:
-    def __init__(self,x,y):
-        self.x = x
-        self.y = y
-    def draw():
-        pass
-    def checkCollision():
-        pass
+    
+def createWall(x,y):
+    #STEP 1
+    tmpX = x
+    tmpY = y
+    for i in range(0,3):
+        x = tmpX
+        for j in range(0,2):
+            r = pygame.Rect(x,y,WALL_SIZE,WALL_SIZE)
+            walls.append(r)
+            x += WALL_SIZE
+        y -= WALL_SIZE
+    #STEP 2
+    y = tmpY
+    for i in range(0,3):
+        x = tmpX + WALL_SIZE * 5
+        for j in range(0,2):
+            r = pygame.Rect(x,y,WALL_SIZE,WALL_SIZE)
+            walls.append(r)
+            x += WALL_SIZE
+        y -= WALL_SIZE
+    #STEP 3
+    y += WALL_SIZE
+    for i in range(0,2):
+        x = tmpX + WALL_SIZE * 4
+        for j in range(0,3):
+            r = pygame.Rect(x,y,WALL_SIZE,WALL_SIZE)
+            walls.append(r)
+            x -= WALL_SIZE
+        y -= WALL_SIZE
+    #non aggiungo i poligoni poichè essi non prevedono un costruttore, ma solo una funzione per disegnarli al momento
 
 def start():
     global playerX, playerY
-    playerX = 614 - player.get_width()/2
-    playerY = 650 - player.get_height()
+    playerX = WIDTH/2 - player.get_width()/2
+    playerY = HEIGHT-20 - player.get_height()
     #creazione nemici
     for j in range(50,351,100):
         for i in range(100,1101,200):
             enemies.append(Enemy(i,j))
+    #creazione muri
+    createWall(108,HEIGHT-100)
+    createWall(415,HEIGHT-100)
+    createWall(722,HEIGHT-100)
+    createWall(1029,HEIGHT-100)
 
 def draw():
     DISPLAY.blit(background, (0,0))
@@ -127,14 +156,16 @@ def draw():
 
     for e in enemies:
         e.drawEnemy()
+    for w in walls:
+        pygame.draw.rect(DISPLAY,'green',w)
     for s in shots:
         s.drawShot()
     for s in shotsEnemies:
         s.drawShot()
 
     #debug
-    puntiRender = FONT.render(str(nTurn), 1, (255,255,255))
-    DISPLAY.blit(puntiRender, (100,0))
+    #puntiRender = FONT.render(str(nTurn), 1, (255,255,255))
+    #DISPLAY.blit(puntiRender, (100,0))
 
 def update():
     pygame.display.update()
@@ -154,6 +185,12 @@ while life > 0:
     for s in shotsEnemies:
         if s.checkCollisionPlayer():
             life -= 1
+    for s in shotsEnemies:
+        if s.checkCollisionWall():
+            shotsEnemies.remove(s)
+    for s in shots:
+        if s.checkCollisionWall():
+            shots.remove(s)
 
     if pygame.time.get_ticks()%20 == 0:
         r = random.randint(0,len(enemies)-1)
