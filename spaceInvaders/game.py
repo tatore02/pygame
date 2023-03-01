@@ -31,6 +31,7 @@ enemies = []
 shotsEnemies = []
 life = 3
 walls = []
+points = 0
 
 #CLASSI
 class Shot:
@@ -144,6 +145,8 @@ def start():
 def draw():
     DISPLAY.blit(background, (0,0))
     DISPLAY.blit(player, (playerX,playerY))
+    puntiRender = FONT.render(str(points), False, (255,255,255))
+    DISPLAY.blit(puntiRender, (100,0))
     if life == 3:
         DISPLAY.blit(heart,(1100,0))
         DISPLAY.blit(heart,(1140,0))
@@ -163,10 +166,6 @@ def draw():
     for s in shotsEnemies:
         s.drawShot()
 
-    #debug
-    #puntiRender = FONT.render(str(nTurn), 1, (255,255,255))
-    #DISPLAY.blit(puntiRender, (100,0))
-
 def update():
     pygame.display.update()
     pygame.time.Clock().tick(FPS)
@@ -180,6 +179,7 @@ while life > 0:
     for e in enemies:
         e.move()
         if e.checkCollision():
+            points += 1
             enemies.remove(e)
     
     for s in shotsEnemies:
@@ -208,3 +208,5 @@ while life > 0:
         playerX -= UNIT_SIZE*2
     if keys[pygame.K_RIGHT]:
         playerX += UNIT_SIZE*2
+
+#da quando ho aggiunto il punteggio, il gioco lagga
