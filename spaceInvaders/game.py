@@ -19,7 +19,7 @@ HEIGHT = 670
 DISPLAY = pygame.display.set_mode((WIDTH,HEIGHT))
 UNIT_SIZE = 3
 WALL_SIZE = 15
-FPS = 50
+FPS = 45
 ENEMY_WIDTH = enemy.get_width()
 ENEMY_HEIGHT = enemy.get_height()
 FONT = pygame.font.SysFont('Comic Sans MS', 30, bold=True)
@@ -32,6 +32,8 @@ shotsEnemies = []
 life = 3
 walls = []
 points = 0
+clock = pygame.time.Clock()
+fps = 0
 
 #CLASSI
 class Shot:
@@ -70,20 +72,26 @@ class Enemy:
         self.y = y
         self.vel = UNIT_SIZE
         self.direction = 'r'
+        self.nTurn = 0
     def drawEnemy(self):
         DISPLAY.blit(enemy, (self.x,self.y))
     def move(self):
-        #muovi a destra o sinistra
+        #cambia direzione
         if self.x == self.xPart + (UNIT_SIZE*25):
             self.direction = 'l'
         elif self.x == self.xPart - (UNIT_SIZE*25):
             self.direction = 'r'
-        #cambia direzione
+            self.nTurn += 1
+        #muovi a destra o sinistra
         if self.direction == 'r':
             self.x += UNIT_SIZE/3
         elif self.direction == 'l':
             self.x -= UNIT_SIZE/3
         #muovi i nemici verso il basso
+        if (self.y + ENEMY_HEIGHT) < (HEIGHT-200):
+            if self.nTurn == 1:
+                self.y += UNIT_SIZE*2
+                self.nTurn = 0
 
     def checkCollision(self):
         #collision with player
@@ -147,6 +155,7 @@ def draw():
     DISPLAY.blit(player, (playerX,playerY))
     puntiRender = FONT.render(str(points), False, (255,255,255))
     DISPLAY.blit(puntiRender, (100,0))
+    pygame.display.set_caption(f"FPS: {fps:.2f}")
     if life == 3:
         DISPLAY.blit(heart,(1100,0))
         DISPLAY.blit(heart,(1140,0))
@@ -168,13 +177,15 @@ def draw():
 
 def update():
     pygame.display.update()
-    pygame.time.Clock().tick(FPS)
+    clock.tick(FPS)
     
 start()
 
 while life > 0:
     draw()
     update()
+
+    fps = clock.get_fps()
 
     for e in enemies:
         e.move()
