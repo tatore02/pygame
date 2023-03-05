@@ -15,8 +15,8 @@ tuboSu = pygame.transform.flip(tuboGiu,False,True)
 
 #COSTANTI
 SCHERMO = pygame.display.set_mode((288,512))
-FPS = 50
-VEL_AVANZ = 3
+FPS = 30
+VEL_AVANZ = 4
 FONT = pygame.font.SysFont('Comic Sans MS', 50, bold=True)
 
 class Tubo:
@@ -101,7 +101,7 @@ while True:
     if basex < -45:
         basex = 0
     #GRAVITA'
-    uccelloVely += 0.5
+    uccelloVely += 0.75
     uccelloy += uccelloVely
 
     for event in pygame.event.get():
