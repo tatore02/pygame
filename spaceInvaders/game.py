@@ -97,16 +97,19 @@ class Enemy:
         if self.x > WIDTH-10:
             self.direction = 'l'
         #muovi a destra o sinistra
-        if len(enemies) == 16:
+        if len(enemies) <= 16 and len(enemies) > 11:
             Enemy.vel = (UNIT_SIZE *2)/3
-        if len(enemies) == 11:
+        elif len(enemies) <= 11:
             Enemy.vel = UNIT_SIZE
+        else:
+            Enemy.vel = UNIT_SIZE/2 #per quando ricomincio la partita
         if self.direction == 'r':
             self.x += Enemy.vel
         elif self.direction == 'l':
             self.x -= Enemy.vel
         #muovi i nemici verso il basso
-        if (self.y + ENEMY_HEIGHT) < (HEIGHT-200):
+        maxDiscesa = self.y - self.yPart
+        if maxDiscesa < 150:
             if self.nTurn == 1:
                 self.y += UNIT_SIZE*4
                 self.nTurn = 0
