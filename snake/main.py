@@ -12,12 +12,11 @@ UNIT_SIZE = 25
 direction = 'r'
 gameOver = False
 bodyParts = 1
-playerX = list()
-playerY = list()
+playerX = []
+playerY = []
 playerX.append(250)
 playerY.append(250)
 #player = pygame.Rect(playerX,playerY,UNIT_SIZE,UNIT_SIZE)
-
 
 appleX = int(random.randint(0,21)) * UNIT_SIZE
 appleY = int(random.randint(0,21)) * UNIT_SIZE
@@ -45,12 +44,11 @@ def draw():
         i += UNIT_SIZE
 
 def move():
-    if bodyParts > 1:
-        i = bodyParts
-        while i > 0:
-            playerX[i] = playerX[i-1]
-            playerY[i] = playerY[i-1]
-            i -= 1
+    i = bodyParts
+    while i > 0:
+        playerX[i] = playerX[i-1]
+        playerY[i] = playerY[i-1]
+        i -= 1
     if direction == 'r':
         playerX[0] += UNIT_SIZE
     if direction == 'l':
@@ -72,17 +70,13 @@ def checkCollision():
     return False
 
 def upgradeApple():
-    pygame.draw.rect(DISPLAY, 'black', [appleX, appleY, UNIT_SIZE, UNIT_SIZE])
-    global appleX
+    global appleX, appleY, bodyParts
     appleX = int(random.randint(0,21)) * UNIT_SIZE
-    global appleY
     appleY = int(random.randint(0,21)) * UNIT_SIZE
+    pygame.draw.rect(DISPLAY, 'black', [appleX, appleY, UNIT_SIZE, UNIT_SIZE])
     playerX.append(None)
     playerY.append(None)
     bodyParts += 1
-
-
- 
 
 while not gameOver:
     move()

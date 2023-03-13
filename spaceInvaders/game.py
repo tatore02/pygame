@@ -25,7 +25,7 @@ HEIGHT = 670
 DISPLAY = pygame.display.set_mode((WIDTH,HEIGHT))
 UNIT_SIZE = 3
 WALL_SIZE = 15
-FPS = 45
+FPS = 30
 ENEMY_WIDTH = enemyRed.get_width()
 ENEMY_HEIGHT = enemyRed.get_height()
 SHOT_WIDTH = shot.get_width()
@@ -304,5 +304,3 @@ while True:
     if life <= 0:
         draw()
         gameOver()
-
-#da quando ho aggiunto il punteggio, il gioco lagga su MAC
